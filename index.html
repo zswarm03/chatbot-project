@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
+        #chatbox { width: 50%; margin: auto; padding: 10px; border: 1px solid #ccc; }
+        #userInput { width: 80%; padding: 10px; }
+        button { padding: 10px; margin-top: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>AI Chatbot</h2>
+    <div id="chatbox">
+        <p><b>Chatbot:</b> Hello! How can I assist you today?</p>
+    </div>
+    <input type="text" id="userInput" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        function sendMessage() {
+            let userInput = document.getElementById("userInput").value;
+            let chatbox = document.getElementById("chatbox");
+
+            // Prevent sending empty messages
+            if (userInput.trim() === "") {
+                return;
+            }
+
+            // Display user message in chatbox
+            chatbox.innerHTML += `<p><b>You:</b> ${userInput}</p>`;
+            document.getElementById("userInput").value = ""; // Clear input field
+
+            // Send user message to Flask backend
+            fetch("http://127.0.0.1:5000/chat", {  // Ensure Flask is running at 
+localhost:5000
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userInput })  // Send user input as JSON
+            })
+            .then(response => response.json())  // Convert response to JSON
+            .then(data => {
+                chatbox.innerHTML += `<p><b>Chatbot:</b> ${data.response}</p>`;  // 
+Display chatbot's reply
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                chatbox.innerHTML += `<p><b>Error:</b> Unable to contact the 
+chatbot.</p>`;
+            });
+        }
+    </script>
+</body>
+</html>
+
