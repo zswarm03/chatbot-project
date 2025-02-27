@@ -14,6 +14,10 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 app = Flask(__name__)
 CORS(app)
 
+@app.route('/')
+def index():
+    return "Welcome to my Chatbot Service!"
+
 # Function to extract structured text from the resume PDF
 def extract_resume_text(pdf_path):
     if not os.path.exists(pdf_path):
