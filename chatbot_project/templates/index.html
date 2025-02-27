@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zhizhen Yang's Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        #chat-container { width: 400px; margin: auto; border: 1px solid #ccc; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+        #chat-messages { height: 300px; overflow-y: auto; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+        #user-input { width: 80%; padding: 10px; }
+        button { padding: 10px 15px; background: blue; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h2>Zhizhen Yang's Chatbot</h2>
+    <div id="chat-container">
+        <div id="chat-messages"></div>
+        <input type="text" id="user-input" placeholder="Ask me anything..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const inputField = document.getElementById("user-input");
+            const message = inputField.value.trim();
+            if (!message) return;
+
+            const chatMessages = document.getElementById("chat-messages");
+            chatMessages.innerHTML += `<div><b>You:</b> ${message}</div>`;
+
+            inputField.value = "";
+
+            try {
+                const response = await fetch("/chat", { 
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ question: message })
+                });
+
+                const data = await response.json();
+                chatMessages.innerHTML += `<div><b>Chatbot:</b> ${data.answer}</div>`;
+            } catch (error) {
+                chatMessages.innerHTML += `<div><b>Chatbot:</b> Sorry, I couldn't process your request.</div>`;
+                console.error("Chatbot error:", error);
+            }
+
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    </script>
+
+</body>
+</html>
+
