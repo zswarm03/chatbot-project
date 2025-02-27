@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with Zhizhen Yang's AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        #chat-container {
+            width: 400px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        #chat-box {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        #user-input {
+            width: 80%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        #send-btn {
+            padding: 10px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Chat with Zhizhen Yang's AI</h2>
+    <div id="chat-container">
+        <div id="chat-box">
+            <p><b>Bot:</b> Hi there! 👋 Ask me anything about Zhizhen Yang!</p>
+        </div>
+        <input type="text" id="user-input" placeholder="Type your question...">
+        <button id="send-btn">Send</button>
+    </div>
+
+    <script>
+        document.getElementById("send-btn").addEventListener("click", function() {
+            let userMessage = document.getElementById("user-input").value;
+            if (userMessage.trim() === "") return;
+
+            document.getElementById("chat-box").innerHTML += `<p><b>You:</b> ${userMessage}</p>`;
+
+            fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ question: userMessage })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("chat-box").innerHTML += `<p><b>Bot:</b> ${data.answer}</p>`;
+            });
+
+            document.getElementById("user-input").value = "";
+        });
+    </script>
+
+</body>
+</html>
+
